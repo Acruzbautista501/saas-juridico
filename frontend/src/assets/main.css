@@ -2,9 +2,11 @@
 @import "@fortawesome/fontawesome-free/css/all.min.css";
 @plugin "flowbite/plugin";
 @source "../node_modules/flowbite/src/**/*.{js,ts}";
+@custom-variant dark (&:where(.dark, .dark *));
 
 :root {
   color-scheme: light;
+  font-family: "Lexend", sans-serif;
 }
 
 html.dark {
