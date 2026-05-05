@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { ref } from 'vue'
 import { RouterLink, RouterView } from 'vue-router'
+import { useThemeStore } from '../stores/theme.store'
 
 interface NavItem {
   label: string
@@ -30,38 +31,16 @@ const currentUser: User = {
   avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDgWWb0BCeUaXvx5uKsx8vFIGmyLoMskE5DrrbjHp09AkyhPh8Bk8yfxK1z8MEXuI-M92can9osxyVIDGB-Q6osHVh442KurRb8Hpz54a1821RRNYxbvCF3hWUothVSs9jdWGHFoSP5_InUotczLiFPKSDoBrvSu7Qu6VWuVidQHv0cdOn6pv1QYK-PiNX8ppU_LVMol5pkwzW52528BAajp4TdITXfzeEYRew7roeuWeeaoiNX_HWmVtb-H7w6zu8crizRipSk5dc',
 }
 
-const theme = ref<'light' | 'dark'>('dark')
 const sidebarOpen = ref(false)
+const theme = useThemeStore()
 
-const themeIcon = computed(() => theme.value === 'dark' ? 'light_mode' : 'dark_mode')
-const themeLabel = computed(() => theme.value === 'dark' ? 'Modo claro' : 'Modo oscuro')
-
-const applyTheme = (nextTheme: 'light' | 'dark') => {
-  theme.value = nextTheme
-  document.documentElement.classList.toggle('dark', nextTheme === 'dark')
-  localStorage.setItem('theme', nextTheme)
-}
-
-const initializeTheme = () => {
-  const savedTheme = localStorage.getItem('theme')
-  if (savedTheme === 'light' || savedTheme === 'dark') {
-    applyTheme(savedTheme)
-    return
-  }
-
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-  applyTheme(prefersDark ? 'dark' : 'light')
-}
-
-const toggleTheme = () => applyTheme(theme.value === 'dark' ? 'light' : 'dark')
+const toggleTheme = () => theme.toggleTheme()
 const toggleSidebar = () => {
   sidebarOpen.value = !sidebarOpen.value
 }
 const closeSidebar = () => {
   sidebarOpen.value = false
 }
-
-onMounted(initializeTheme)
 </script>
 
 <template>
@@ -77,7 +56,7 @@ onMounted(initializeTheme)
       <!-- Brand -->
       <div class="px-6 mb-8">
         <div class="flex items-center gap-3 mb-1">
-          <img src="/img/logo-dark.png" alt="">
+          <img src="/img/logo-dark.png" alt="JurídicoPro MX Logo" class="w-auto">
         </div>
       </div>
 
@@ -112,8 +91,8 @@ onMounted(initializeTheme)
           @click="toggleTheme"
         >
           <span class="flex items-center gap-2">
-            <span class="material-symbols-outlined">{{ themeIcon }}</span>
-            {{ themeLabel }}
+            <span class="material-symbols-outlined">{{ theme.themeIcon }}</span>
+            {{ theme.themeLabel }}
           </span>
         </button>
       </div>
@@ -154,7 +133,7 @@ onMounted(initializeTheme)
       <!-- Mobile Header -->
       <header class="min-[992px]:hidden flex items-center justify-between p-4 border-b border-slate-700/50 bg-[#1e293b] backdrop-blur-sm sticky top-0 z-40">
         <div class="flex items-center gap-3">
-          <img src="/img/logo-dark.png" alt="Logo" class="h-8 w-auto" />
+          <img src="/img/logo-dark.png"  alt="Logo" class="h-8 w-auto" />
         </div>
         <button
           type="button"
